@@ -48,16 +48,29 @@ npm install
 npm run dev
 ```
 
-The backend runs on `http://localhost:5000`
+The backend runs on `http://localhost:5000` (locally). For production, use the Render URL: `https://cognivio-ai.onrender.com`
 
 ## 🔑 Environment Variables
 
-### Mobile App (`.env`)
-```
+### 📱 Mobile App (`.env`)
+> ✅ Production build: **never use localhost**. The mobile client must call Render.
+
+```bash
 EXPO_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
 EXPO_PUBLIC_GEMINI_PROJECT_ID=your_project_id
-EXPO_PUBLIC_API_URL=http://localhost:5000/api
+
+# Render backend (used by src/services/apiClient.ts)
+EXPO_PUBLIC_API_URL=https://cognivio-ai.onrender.com/api
 ```
+
+### 🧩 Mobile ↔ Backend sanity check
+- Your app should show in logs:
+  - `BASE_URL: https://cognivio-ai.onrender.com/api`
+- Your Render logs should include:
+  - `POST /api/auth/login` (when you tap Login)
+
+### Mobile Dev Note
+- If you run the app locally, you can temporarily point `EXPO_PUBLIC_API_URL` to your local backend (e.g. `http://<your-machine-ip>:5000/api`).
 
 ### Backend (`backend/.env`)
 ```
