@@ -2,8 +2,6 @@
 
 A premium AI-powered learning platform built with **React Native + Expo + TypeScript**.
 
-![Cognivio AI](./assets/icon.png)
-
 ## ✨ Features
 
 | Feature | Description |
