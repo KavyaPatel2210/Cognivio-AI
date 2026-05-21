@@ -33,7 +33,9 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
         "RECEIVE_BOOT_COMPLETED",
-        "VIBRATE"
+        "VIBRATE",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -52,14 +54,19 @@
         "expo-notifications",
         {
           "icon": "./assets/notification-icon.png",
-          "color": "#6C63FF",
-          "sounds": ["./assets/notification.wav"]
+          "color": "#6C63FF"
         }
       ]
     ],
     "scheme": "cognivioai",
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "80bd24e6-e456-4507-94dd-fed646905f09"
+      }
     }
   }
 }
