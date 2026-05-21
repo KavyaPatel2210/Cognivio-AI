@@ -4,26 +4,12 @@ import { tokenStorage } from '../utils/tokenStorage';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 
-const getBaseUrl = () => {
-  const defaultRenderApiBaseUrl = 'https://cognivio-ai.onrender.com/api';
-  const url = process.env.EXPO_PUBLIC_API_URL || defaultRenderApiBaseUrl;
+// Render API base URL (mobile should not rely on localhost substitutions)
+const BASE_URL = 'https://cognivio-ai.onrender.com/api';
 
-  // Extract local IP from Metro packager hostUri (only relevant for localhost/dev)
-  const hostUri = Constants.expoConfig?.hostUri || '';
-  const packagerIp = hostUri.split(':')[0];
+console.log('BASE_URL:', BASE_URL);
 
-  if (url.includes('localhost')) {
-    if (packagerIp) {
-      return url.replace('localhost', packagerIp);
-    } else if (Platform.OS === 'android') {
-      return url.replace('localhost', '10.0.2.2');
-    }
-  }
 
-  return url;
-};
-
-const BASE_URL = getBaseUrl();
 
 class ApiService {
   private client: AxiosInstance;
@@ -76,8 +62,16 @@ class ApiService {
   }
 
   async post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
-    const response = await this.client.post<T>(url, data, config);
-    return response.data;
+    try {
+      const response = await this.client.post<T>(url, data, config);
+      return response.data;
+    } catch (err: any) {
+      console.log('API POST failed:', { url, status: err?.response?.status, data: err?.response?.data });
+      if (err?.request && !err?.response) {
+        console.log('API POST network error:', err.message);
+      }
+      throw err;
+    }
   }
 
   async put<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {

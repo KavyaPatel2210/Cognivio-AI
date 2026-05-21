@@ -20,10 +20,20 @@ const PORT = process.env.PORT || 5000;
 
 // Security middleware
 app.use(helmet());
-app.use(cors({
-  origin: ['http://localhost:3000', 'exp://localhost:8081', 'https://cognivio-ai.onrender.com'],
-  credentials: true,
-}));
+
+// CORS: React Native apps don't have a traditional browser origin. Keep it permissive.
+app.use(cors());
+
+// Logging (Render logs should show whether requests reach the server)
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
+// Logging and parsing (must happen before routes)
+app.use(morgan('combined'));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -31,11 +41,6 @@ const limiter = rateLimit({
   max: 100,
 });
 app.use('/api/', limiter);
-
-// Logging and parsing
-app.use(morgan('combined'));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', authRoutes);
