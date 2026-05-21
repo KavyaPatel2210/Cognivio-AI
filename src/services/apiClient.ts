@@ -5,9 +5,10 @@ import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 
 const getBaseUrl = () => {
-  const url = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000/api';
-  
-  // Extract local IP from Metro packager hostUri
+  const defaultRenderApiBaseUrl = 'https://cognivio-ai.onrender.com/api';
+  const url = process.env.EXPO_PUBLIC_API_URL || defaultRenderApiBaseUrl;
+
+  // Extract local IP from Metro packager hostUri (only relevant for localhost/dev)
   const hostUri = Constants.expoConfig?.hostUri || '';
   const packagerIp = hostUri.split(':')[0];
 
@@ -18,6 +19,7 @@ const getBaseUrl = () => {
       return url.replace('localhost', '10.0.2.2');
     }
   }
+
   return url;
 };
 
@@ -52,7 +54,7 @@ class ApiService {
           try {
             const refreshToken = await tokenStorage.getItem('refreshToken');
             if (!refreshToken) throw new Error('No refresh token');
-            const { data } = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken });
+            const { data } = await this.client.post<{ accessToken: string; refreshToken: string }>('/auth/refresh', { refreshToken });
             await tokenStorage.setItem('accessToken', data.accessToken);
             await tokenStorage.setItem('refreshToken', data.refreshToken);
             original.headers.Authorization = `Bearer ${data.accessToken}`;

@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 5000;
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: ['http://localhost:3000', 'exp://localhost:8081'],
+  origin: ['http://localhost:3000', 'exp://localhost:8081', 'https://cognivio-ai.onrender.com'],
   credentials: true,
 }));
 
